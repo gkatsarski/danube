@@ -11,7 +11,7 @@ app.post("/", (req: Request, res: Response) => {
 });
 
 app.get("/", (req: Request, res: Response) => {
-  res.status(200).send("hw!");
+  res.status(200).send("hw");
 });
 
 mongoose.connect("mongodb://127.0.0.1:27017/cooking").then(() => {
