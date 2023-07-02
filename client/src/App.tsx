@@ -1,36 +1,16 @@
-import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
-function App() {
-  const [title, setTitle] = useState("");
+import LogInForm from "./components/LogInForm";
+import RegisterForm from "./components/RegisterForm";
 
-  const handleClickEvent = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await fetch("http://localhost:5000", {
-      method: "POST",
-      body: JSON.stringify({ title }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    setTitle("");
-  };
+function App() {
   return (
-    <>
-      <form onSubmit={handleClickEvent}>
-        <label htmlFor="deck-title">Deck Title</label>
-        <input
-          id="deck-title"
-          value={title}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setTitle(e.target.value)
-          }
-        />
-        <button>Create</button>
-      </form>
-    </>
+    <Routes>
+      <Route path="/" element={<h1>Welcome</h1>} />
+      <Route path="/login" Component={LogInForm} />
+      <Route path="/register" Component={RegisterForm} />
+    </Routes>
   );
 }
 
