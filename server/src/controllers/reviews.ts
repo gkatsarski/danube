@@ -17,8 +17,8 @@ export async function postReview(req: Request, res: Response) {
 
     res
       .status(201)
-      .location(`/api/products/${review.userId}/reviews`)
-      .send("Created");
+      .location(`/api/products/${review.productId}/reviews`)
+      .json(review);
   } catch (err: any) {
     console.error(err);
     res.status(500).send(`Could not create review: ${err}`);
