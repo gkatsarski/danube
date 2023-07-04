@@ -8,7 +8,6 @@ import ProductGrid from "./components/ProductGrid";
 import ProductDetails from "./components/ProductDetails";
 import { useState } from "react";
 import EditAccount from "./components/EditAccount";
-import Cart from "./components/Orders";
 import Orders from "./components/Orders";
 
 const App = () => {
