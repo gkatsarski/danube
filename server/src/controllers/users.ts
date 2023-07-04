@@ -40,7 +40,6 @@ export async function getUserById(req: Request, res: Response) {
 export async function updateUser(req: Request, res: Response) {
   console.log(req.params.userId);
   try {
-    console.log(req.body);
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
       req.body,
@@ -52,9 +51,9 @@ export async function updateUser(req: Request, res: Response) {
     );
     console.log(user);
     res.status(200).send("User updated");
-  } catch (err: any) {
-    console.log(err);
-    res.status(500).send(`Could not update user: ${err}`);
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).send(`Could not update user: ${error}`);
   }
 }
 
@@ -84,7 +83,7 @@ export async function logIn(req: Request, res: Response) {
     }
 
     const token: string = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, username: user.username },
       process.env.SECRET_KEY!,
       {
         expiresIn: "2h",

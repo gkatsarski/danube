@@ -52,6 +52,14 @@ export async function updateOrder(req: Request, res: Response) {
     res.status(500).send(`Could not update order: ${err}`);
   }
 }
+export async function getOrdersByUserId(req: Request, res: Response) {
+  try {
+    const orders = await Order.find({ userId: req.params.userId });
+    res.status(200).json(orders);
+  } catch (error: any) {
+    res.status(500).send(`Could not get orders: ${error}`);
+  }
+}
 
 export async function deleteOrder(req: Request, res: Response) {
   console.log(req.params.orderId);

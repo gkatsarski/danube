@@ -35,7 +35,7 @@ const LogInForm: React.FC<LogInFormProps> = ({ onLoginSuccess }) => {
       console.log(response.data);
 
       onLoginSuccess();
-
+      console.log("onloginsuccess");
       const jwtToken: string = response.data.substring(17);
       localStorage.setItem("jwtToken", jwtToken);
       setUsername("");
@@ -91,7 +91,9 @@ const LogInForm: React.FC<LogInFormProps> = ({ onLoginSuccess }) => {
                 }
               />
               {showErrorMessage && (
-                <FormErrorMessage>Invalid email or password</FormErrorMessage>
+                <FormErrorMessage>
+                  Invalid username or password
+                </FormErrorMessage>
               )}
             </FormControl>
 

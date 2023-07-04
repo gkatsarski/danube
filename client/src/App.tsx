@@ -8,6 +8,8 @@ import ProductGrid from "./components/ProductGrid";
 import ProductDetails from "./components/ProductDetails";
 import { useState } from "react";
 import EditAccount from "./components/EditAccount";
+import Cart from "./components/Orders";
+import Orders from "./components/Orders";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -31,6 +33,7 @@ const App = () => {
           element={<ProductDetails isAuthenticated={isAuthenticated} />}
         />
         <Route path="/account" element={<EditAccount />} />
+        <Route path="/orders" element={<Orders />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

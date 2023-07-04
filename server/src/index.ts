@@ -25,6 +25,7 @@ import {
   deleteOrder,
   getOrderById,
   getOrders,
+  getOrdersByUserId,
   postOrder,
   updateOrder,
 } from "./controllers/orders";
@@ -62,6 +63,8 @@ app.get("/api/orders", getOrders);
 app.post("/api/orders", postOrder);
 
 app.get("/api/orders/:orderId/", getOrderById);
+
+app.get("/api/users/:userId/orders/", getOrdersByUserId);
 
 app.put("/api/orders/:orderId/", updateOrder);
 

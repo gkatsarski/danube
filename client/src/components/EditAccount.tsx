@@ -30,13 +30,10 @@ interface Token {
   exp: number;
 }
 
-function EditAccount() {
+const EditAccount = () => {
   const token = localStorage.getItem("jwtToken");
   const decoded: Token | undefined = jwt_decode(token!);
 
-  //   if (token) {
-
-  //   }
   const [user, setUser] = useState<User>({
     _id: "",
     firstName: "",
@@ -46,7 +43,6 @@ function EditAccount() {
     address: "",
     email: "",
   });
-
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
@@ -117,30 +113,32 @@ function EditAccount() {
           >
             <Stack spacing={4}>
               <HStack>
-                <Box>
-                  <FormControl id="first-name-edit">
-                    <FormLabel>First Name</FormLabel>
-                    <Input
-                      type="text"
-                      value={user?.firstName}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setUser({ ...user, firstName: e.target.value })
-                      }
-                    />
-                  </FormControl>
-                </Box>
-                <Box>
-                  <FormControl id="last-name-edit">
-                    <FormLabel>Last Name</FormLabel>
-                    <Input
-                      type="text"
-                      value={user.lastName}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setUser({ ...user, lastName: e.target.value })
-                      }
-                    />
-                  </FormControl>
-                </Box>
+                <>
+                  <Box>
+                    <FormControl id="first-name-edit">
+                      <FormLabel>First Name</FormLabel>
+                      <Input
+                        type="text"
+                        value={user?.firstName}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setUser({ ...user, firstName: e.target.value })
+                        }
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box>
+                    <FormControl id="last-name-edit">
+                      <FormLabel>Last Name</FormLabel>
+                      <Input
+                        type="text"
+                        value={user.lastName}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setUser({ ...user, lastName: e.target.value })
+                        }
+                      />
+                    </FormControl>
+                  </Box>
+                </>
               </HStack>
               <FormControl id="username-edit">
                 <FormLabel>Username</FormLabel>
@@ -217,5 +215,5 @@ function EditAccount() {
       </Flex>
     </>
   );
-}
+};
 export default EditAccount;

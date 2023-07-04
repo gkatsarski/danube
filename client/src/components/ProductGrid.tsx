@@ -25,7 +25,7 @@ const ProductGrid = () => {
   }, []);
   console.log(products);
   return (
-    <SimpleGrid columns={[2, null, 4]} spacing="40px">
+    <SimpleGrid columns={[2, null, 4]} spacing="40px" margin="45px">
       {products.map((product) => (
         <ProductCard key={product._id} product={product}></ProductCard>
       ))}

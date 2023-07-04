@@ -23,12 +23,19 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import noImage from "../assets/no-image-placeholder-6f3882e0.webp";
+import jwt_decode from "jwt-decode";
 
 interface Review {
   _id: string;
   username: string;
   productId: string;
   content: string;
+}
+interface Token {
+  userId: string;
+  username: string;
+  iat: number;
+  exp: number;
 }
 
 interface ProductDetailsProps {
@@ -40,6 +47,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
   const [product, setProduct] = useState<Product>();
   const [reviews, setReviews] = useState<Review[]>();
   const [newReview, setNewReview] = useState("");
+
+  const token = localStorage.getItem("jwtToken");
+  const decoded: Token | undefined = jwt_decode(token!);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -73,6 +83,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
     getProduct();
   }, []);
 
+  const handleOrder = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      await axios.post("http://localhost:5000/api/orders", {
+        userId: decoded!.userId,
+        productId: productId,
+        productImageUrl: product?.imageUrl,
+        productName: product?.name,
+      });
+    } catch (error: any) {
+      console.error("Error posting order:", error);
+    }
+  };
+
   const handleAddNewReview = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -81,8 +105,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
       const response = await axios.post(
         `http://localhost:5000/api/products/${productId}/reviews`,
         {
-          userId: "64a211b08cff85d71ef7894a",
-          username: "georgi8081",
+          userId: decoded!.userId,
+          username: decoded!.username,
           productId: productId,
           content: newReview,
         }
@@ -139,14 +163,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
             }
           >
             <VStack spacing={{ base: 4, sm: 6 }}>
-              {/* <Text
-                color={useColorModeValue("gray.500", "gray.400")}
-                fontSize={"2xl"}
-                fontWeight={"300"}
-              >
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore
-              </Text> */}
               <Text fontSize={"lg"}>{product?.description}</Text>
             </VStack>
             <Box>
@@ -215,6 +231,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
           </Stack>
 
           <Button
+            isDisabled={!isAuthenticated}
             rounded={"none"}
             w={"full"}
             mt={8}
@@ -227,8 +244,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
               transform: "translateY(2px)",
               boxShadow: "lg",
             }}
+            onClick={handleOrder}
           >
-            Add to cart
+            Order
           </Button>
 
           <Stack direction="row" alignItems="center" justifyContent={"center"}>
