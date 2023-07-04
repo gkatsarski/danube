@@ -1,6 +1,9 @@
 import User from "../models/User";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export async function getUsers(req: Request, res: Response) {
   try {
@@ -79,9 +82,14 @@ export async function logIn(req: Request, res: Response) {
     if (!user || user.password !== password) {
       return res.status(401).send("Error: Invalid username or password");
     }
-    const token: string = jwt.sign({ userId: user._id }, "secret key", {
-      expiresIn: "2h",
-    });
+
+    const token: string = jwt.sign(
+      { userId: user._id },
+      process.env.SECRET_KEY!,
+      {
+        expiresIn: "2h",
+      }
+    );
 
     res.status(200).send(`Login successful ${token}`);
   } catch (err) {

@@ -31,7 +31,11 @@ interface Review {
   content: string;
 }
 
-function ProductDetails() {
+interface ProductDetailsProps {
+  isAuthenticated: boolean;
+}
+
+const ProductDetails: React.FC<ProductDetailsProps> = ({ isAuthenticated }) => {
   const { productId } = useParams();
   const [product, setProduct] = useState<Product>();
   const [reviews, setReviews] = useState<Review[]>();
@@ -145,30 +149,6 @@ function ProductDetails() {
               </Text> */}
               <Text fontSize={"lg"}>{product?.description}</Text>
             </VStack>
-            {/* <Box>
-              <Text
-                fontSize={{ base: "16px", lg: "18px" }}
-                color={useColorModeValue("yellow.500", "yellow.300")}
-                fontWeight={"500"}
-                textTransform={"uppercase"}
-                mb={"4"}
-              >
-                Features
-              </Text>
-
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
-                <List spacing={2}>
-                  <ListItem>Chronograph</ListItem>
-                  <ListItem>Master Chronometer Certified</ListItem>{" "}
-                  <ListItem>Tachymeter</ListItem>
-                </List>
-                <List spacing={2}>
-                  <ListItem>Anti‑magnetic</ListItem>
-                  <ListItem>Chronometer</ListItem>
-                  <ListItem>Small seconds</ListItem>
-                </List>
-              </SimpleGrid>
-            </Box> */}
             <Box>
               <Text
                 fontSize={{ base: "16px", lg: "18px" }}
@@ -276,10 +256,14 @@ function ProductDetails() {
               mt={2}
               backgroundColor={"grey"}
             >
-              <Text padding={"5px"} fontWeight={600} fontSize={"xl"}>
+              <Text
+                padding={"5px"}
+                fontWeight={600}
+                fontSize={{ base: "12px", lg: "18px" }}
+              >
                 {r.username}:
               </Text>
-              <Text padding={"5px"} fontSize={"2xl"}>
+              <Text padding={"5px"} fontSize={{ base: "12px", lg: "18px" }}>
                 {r.content}
               </Text>
             </Box>
@@ -290,6 +274,7 @@ function ProductDetails() {
         <FormControl id="name">
           <FormLabel>Add review</FormLabel>
           <Textarea
+            isDisabled={!isAuthenticated}
             value={newReview}
             borderColor="gray.300"
             _hover={{
@@ -303,6 +288,7 @@ function ProductDetails() {
         </FormControl>
         <FormControl id="name" float="right">
           <Button
+            isDisabled={!isAuthenticated}
             variant="solid"
             bg="#0D74FF"
             color="white"
@@ -315,5 +301,5 @@ function ProductDetails() {
       </Stack>
     </Container>
   );
-}
+};
 export default ProductDetails;

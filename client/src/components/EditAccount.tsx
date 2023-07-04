@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import {
   Flex,
   Box,
@@ -14,43 +13,80 @@ import {
   HStack,
   Textarea,
 } from "@chakra-ui/react";
+import jwt_decode from "jwt-decode";
 
-function RegisterForm() {
-  const navigate = useNavigate();
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  email: string;
+  address: string;
+}
+interface Token {
+  userId: string;
+  iat: number;
+  exp: number;
+}
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+function EditAccount() {
+  const token = localStorage.getItem("jwtToken");
+  const decoded: Token | undefined = jwt_decode(token!);
+
+  //   if (token) {
+
+  //   }
+  const [user, setUser] = useState<User>({
+    _id: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+    password: "",
+    address: "",
+    email: "",
+  });
+
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [address, setAddress] = useState("");
 
-  const handleRegister = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        // Make a GET request to the backend API endpoint
+        const response = await axios.get(
+          `http://localhost:5000/api/users/${decoded!.userId}`
+        );
+        const fetchedUser: User = response.data;
+        console.log(fetchedUser);
+
+        // Update the component state with the retrieved products
+        setUser(fetchedUser);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+    getUserInfo();
+  }, []);
+  const handleEditAccount = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      if (password !== confirmPassword) {
+      if (user.password !== confirmPassword) {
+        console.log("user.password:", user.password);
         throw new Error("Passwords don't match");
       }
-      const response = await axios.post("http://localhost:5000/api/users", {
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
-        address,
-      });
-
-      console.log(response.data);
-      setFirstName("");
-      setLastName("");
-      setUsername("");
-      setEmail("");
-      setPassword("");
+      const response = await axios.put(
+        `http://localhost:5000/api/users/${decoded!.userId}`,
+        {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          address: user.address,
+        }
+      );
       setConfirmPassword("");
-      setAddress("");
-
-      navigate("/");
+      console.log(response.data);
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -71,7 +107,7 @@ function RegisterForm() {
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>Register a new account</Heading>
+            <Heading fontSize={"4xl"}>Your account</Heading>
           </Stack>
           <Box
             rounded={"lg"}
@@ -82,61 +118,61 @@ function RegisterForm() {
             <Stack spacing={4}>
               <HStack>
                 <Box>
-                  <FormControl id="first-name-register" isRequired>
+                  <FormControl id="first-name-edit">
                     <FormLabel>First Name</FormLabel>
                     <Input
                       type="text"
-                      value={firstName}
+                      value={user?.firstName}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setFirstName(e.target.value)
+                        setUser({ ...user, firstName: e.target.value })
                       }
                     />
                   </FormControl>
                 </Box>
                 <Box>
-                  <FormControl id="last-name-register" isRequired>
+                  <FormControl id="last-name-edit">
                     <FormLabel>Last Name</FormLabel>
                     <Input
                       type="text"
-                      value={lastName}
+                      value={user.lastName}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setLastName(e.target.value)
+                        setUser({ ...user, lastName: e.target.value })
                       }
                     />
                   </FormControl>
                 </Box>
               </HStack>
-              <FormControl id="username-register" isRequired>
+              <FormControl id="username-edit">
                 <FormLabel>Username</FormLabel>
                 <Input
                   type="text"
-                  value={username}
+                  value={user.username}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUsername(e.target.value)
+                    setUser({ ...user, username: e.target.value })
                   }
                 />
               </FormControl>
-              <FormControl id="email-register" isRequired>
+              <FormControl id="email-edit">
                 <FormLabel>Email</FormLabel>
                 <Input
                   type="email"
-                  value={email}
+                  value={user.email}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
+                    setUser({ ...user, email: e.target.value })
                   }
                 />
               </FormControl>
-              <FormControl id="password-register" isRequired>
+              <FormControl id="password-edit">
                 <FormLabel>Password</FormLabel>
                 <Input
                   type="password"
-                  value={password}
+                  value={user.password}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPassword(e.target.value)
+                    setUser({ ...user, password: e.target.value })
                   }
                 />
               </FormControl>
-              <FormControl id="confirm-password-register" isRequired>
+              <FormControl id="confirm-password-edit">
                 <FormLabel>Confirm Password</FormLabel>
                 <Input
                   type="password"
@@ -146,12 +182,12 @@ function RegisterForm() {
                   }
                 />
               </FormControl>
-              <FormControl id="address-register" isRequired>
+              <FormControl id="address-edit">
                 <FormLabel>Address</FormLabel>
                 <Textarea
-                  value={address}
+                  value={user.address}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setAddress(e.target.value)
+                    setUser({ ...user, address: e.target.value })
                   }
                 />
               </FormControl>
@@ -170,9 +206,9 @@ function RegisterForm() {
                   _hover={{
                     bg: "blue.500",
                   }}
-                  onClick={handleRegister}
+                  onClick={handleEditAccount}
                 >
-                  Register
+                  Edit Account
                 </Button>
               </Stack>
             </Stack>
@@ -182,4 +218,4 @@ function RegisterForm() {
     </>
   );
 }
-export default RegisterForm;
+export default EditAccount;

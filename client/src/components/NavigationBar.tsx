@@ -21,9 +21,20 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
+import { AiOutlineUser, AiOutlineShoppingCart } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
-export default function WithSubnavigation() {
+interface NavigationBarProps {
+  isAuthenticated: boolean;
+}
+
+const NavigationBar: React.FC<NavigationBarProps> = ({ isAuthenticated }) => {
   const { isOpen, onToggle } = useDisclosure();
+
+  const navigate = useNavigate();
+  const handleHomeClick = () => {
+    navigate(`/`);
+  };
 
   return (
     <Box>
@@ -57,8 +68,9 @@ export default function WithSubnavigation() {
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
+            onClick={handleHomeClick}
           >
-            Logo
+            Home
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -72,29 +84,52 @@ export default function WithSubnavigation() {
           direction={"row"}
           spacing={6}
         >
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={"/login"}
-          >
-            Log in
-          </Button>
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-            href={"/register"}
-            _hover={{
-              bg: "pink.300",
-            }}
-          >
-            Register
-          </Button>
+          {!isAuthenticated ? (
+            <>
+              <Button
+                as={"a"}
+                fontSize={"sm"}
+                fontWeight={400}
+                variant={"link"}
+                href={"/login"}
+              >
+                Log in
+              </Button>
+              <Button
+                as={"a"}
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"pink.400"}
+                href={"/register"}
+                _hover={{
+                  bg: "pink.300",
+                }}
+              >
+                Register
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                as={"a"}
+                fontSize={"25px"}
+                variant={"link"}
+                href={"/account"}
+              >
+                <AiOutlineUser />
+              </Button>
+              <Button
+                as={"a"}
+                fontSize={"25px"}
+                variant={"link"}
+                href={"/account"}
+              >
+                <AiOutlineShoppingCart />
+              </Button>
+            </>
+          )}
         </Stack>
       </Flex>
 
@@ -103,7 +138,7 @@ export default function WithSubnavigation() {
       </Collapse>
     </Box>
   );
-}
+};
 
 const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
@@ -305,3 +340,5 @@ const NAV_ITEMS: Array<NavItem> = [
     href: "#",
   },
 ];
+
+export default NavigationBar;

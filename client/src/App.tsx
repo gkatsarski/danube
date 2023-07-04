@@ -6,17 +6,31 @@ import RegisterForm from "./components/RegisterForm";
 import NavigationBar from "./components/NavigationBar";
 import ProductGrid from "./components/ProductGrid";
 import ProductDetails from "./components/ProductDetails";
+import { useState } from "react";
+import EditAccount from "./components/EditAccount";
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+  console.log("LOGGED IN: ", isAuthenticated);
   return (
     <>
-      <h1>appppp</h1>
-      <NavigationBar />
+      <NavigationBar isAuthenticated={isAuthenticated} />
       <Routes>
         <Route path="/" element={<ProductGrid />} />
-        <Route path="/login" Component={LogInForm} />
-        <Route path="/register" Component={RegisterForm} />
-        <Route path="/products/:productId" Component={ProductDetails} />
+        <Route
+          path="/login"
+          element={<LogInForm onLoginSuccess={handleLoginSuccess} />}
+        />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route
+          path="/products/:productId"
+          element={<ProductDetails isAuthenticated={isAuthenticated} />}
+        />
+        <Route path="/account" element={<EditAccount />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

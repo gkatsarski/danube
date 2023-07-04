@@ -14,7 +14,11 @@ import {
   FormErrorMessage,
 } from "@chakra-ui/react";
 
-function LogInForm() {
+interface LogInFormProps {
+  onLoginSuccess: () => void;
+}
+
+const LogInForm: React.FC<LogInFormProps> = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +33,9 @@ function LogInForm() {
         password,
       });
       console.log(response.data);
+
+      onLoginSuccess();
+
       const jwtToken: string = response.data.substring(17);
       localStorage.setItem("jwtToken", jwtToken);
       setUsername("");
@@ -110,6 +117,6 @@ function LogInForm() {
       </Stack>
     </Flex>
   );
-}
+};
 
 export default LogInForm;
